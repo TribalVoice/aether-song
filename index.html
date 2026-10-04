@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<!-- Aether Song, MIT License, copyright 2026 TribalVoice. See LICENSE. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aether Song — 24-bit whale song</title>
+<style>
+  :root {
+    --ink: #e7f6f4;
+    --muted: #8eaea8;
+    --line: rgba(140, 220, 210, 0.18);
+    --glass: rgba(8, 28, 36, 0.72);
+    --teal: #5ee0c5;
+    --foam: #d7fff4;
+    --deep: #041018;
+    --amber: #f0c27a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+    color: var(--ink);
+    background:
+      radial-gradient(1200px 700px at 80% -10%, rgba(40, 120, 130, 0.28), transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, rgba(20, 70, 90, 0.45), transparent 55%),
+      linear-gradient(180deg, #07202b 0%, #04141c 42%, #02090e 100%);
+    min-height: 100%;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(180, 240, 230, 0.16) 0.6px, transparent 0.7px);
+    background-size: 3px 3px;
+    opacity: 0.25;
+    mix-blend-mode: screen;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 36px 22px 64px; position: relative; }
+  header { display: grid; grid-template-columns: 92px 1fr; gap: 18px; align-items: center; margin-bottom: 22px; }
+  .mark { width: 92px; height: 92px; }
+  h1 { font-weight: 500; letter-spacing: 0.01em; font-size: 42px; margin: 0; line-height: 0.95; }
+  h1 span { color: var(--teal); font-style: italic; }
+  .lede { margin: 8px 0 0; color: var(--muted); font-size: 16.5px; max-width: 62ch; line-height: 1.45; }
+  .panel {
+    background: var(--glass);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 18px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+  }
+  .grid { display: grid; grid-template-columns: 280px 1fr; gap: 16px; }
+  @media (max-width: 860px) {
+    .grid, header { grid-template-columns: 1fr; }
+    h1 { font-size: 34px; }
+  }
+  label { display: block; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 12px 0 6px; }
+  select, input[type="number"] {
+    width: 100%;
+    background: #071920;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font: 16px/1.2 Georgia, serif;
+  }
+  input[type="range"] { width: 100%; accent-color: var(--teal); }
+  .row { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 13px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  button {
+    border: 0;
+    border-radius: 999px;
+    padding: 11px 16px;
+    font: 15px/1 Georgia, serif;
+    cursor: pointer;
+  }
+  button.primary { background: var(--teal); color: #04231d; }
+  button.ghost { background: transparent; color: var(--foam); border: 1px solid var(--line); }
+  button:disabled { opacity: 0.45; cursor: wait; }
+  canvas {
+    width: 100%;
+    height: 320px;
+    display: block;
+    border-radius: 12px;
+    background: #021018;
+  }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: 14px;
+    margin-top: 12px; color: var(--muted); font-size: 13.5px;
+  }
+  .meta b { color: var(--foam); font-weight: 500; }
+  .status { min-height: 1.3em; margin-top: 10px; color: var(--amber); font-size: 14.5px; }
+  .notes { margin-top: 18px; color: var(--muted); font-size: 14.5px; line-height: 1.5; }
+  .notes strong { color: var(--foam); font-weight: 500; }
+  footer { margin-top: 22px; color: #6d8883; font-size: 12.5px; letter-spacing: 0.04em; }
+  footer a { color: var(--teal); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .kofi {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 5;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: #ff5e1a;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+  }
+  .kofi svg { width: 26px; height: 26px; display: block; }
+</style>
+</head>
+<body>
+<a class="kofi" href="https://ko-fi.com/tribalvoice" target="_blank" rel="noopener" aria-label="Support on Ko-fi">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="#fff" d="M5 7.5h10.2a2.2 2.2 0 0 1 2.2 2.2V11a3.2 3.2 0 0 1-3.1 3.2H13v.3A3.5 3.5 0 0 1 9.5 18H8A3.5 3.5 0 0 1 4.5 14.5V9.7A2.2 2.2 0 0 1 5 7.5z"/>
+    <path fill="#ff5e1a" d="M6.2 9.2h7.4v1.15H6.2z"/>
+    <path fill="#fff" d="M16.2 9.1h1.15a1.7 1.7 0 0 1 0 3.4H16.2z"/>
+    <path fill="#fff" d="M7.1 4.2c.3.7.2 1.3-.1 1.8-.3-.6-.2-1.2.1-1.8zm2.4-.4c.35.8.2 1.5-.15 2.1-.35-.7-.2-1.4.15-2.1zm2.3.5c.3.7.15 1.3-.15 1.8-.28-.6-.12-1.2.15-1.8z"/>
+  </svg>
+</a>
+<div class="wrap">
+  <header>
+    <svg class="mark" viewBox="0 0 92 92" aria-hidden="true">
+      <circle cx="46" cy="46" r="44" fill="none" stroke="#5ee0c5" stroke-opacity="0.35"/>
+      <path d="M14 52c10-2 16-14 28-16 8-1 14 4 22 3 6-1 10 3 14 2-6 6-12 8-20 7-7-1-9 4-16 6-9 2-18 0-28-2z" fill="#5ee0c5"/>
+      <path d="M58 38c6-10 16-12 20-8-8 2-12 6-14 12-2-1-4-3-6-4z" fill="#d7fff4"/>
+      <circle cx="34" cy="44" r="1.4" fill="#04231d"/>
+    </svg>
+    <div>
+      <h1>Aether <span>song</span></h1>
+      <p class="lede">An Aether instrument for dark ambient source. Long mournful cries, dry or with echo or hall, mono or stereo. Download a 24-bit / 48 kHz PCM WAV for the DAW.</p>
+    </div>
+  </header>
+
+  <div class="grid">
+    <section class="panel">
+      <label for="species">Species model</label>
+      <select id="species">
+        <option value="humpback">Mournful cries</option>
+        <option value="blue">Blue whale moan</option>
+        <option value="orca">Orca pod</option>
+        <option value="chorus">Cries with a distant moan</option>
+      </select>
+
+      <label for="hear">Blue-whale hearing</label>
+      <select id="hear">
+        <option value="shifted">Pitch-shifted ×16 (audible)</option>
+        <option value="true">True infrasonic (mostly inaudible)</option>
+      </select>
+
+      <label for="duration">Duration <span id="durLabel">36 s</span></label>
+      <input id="duration" type="range" min="12" max="90" value="36" />
+
+      <label for="octave">Octave <span id="octLabel">0 · ~A3</span></label>
+      <input id="octave" type="range" min="-2" max="2" step="1" value="0" />
+
+      <label for="level">Level <span id="levelLabel">−6 dB</span></label>
+      <input id="level" type="range" min="-24" max="0" step="1" value="-6" />
+
+      <label for="space">Space</label>
+      <select id="space">
+        <option value="off">Off — dry cry</option>
+        <option value="echo">Echo</option>
+        <option value="hall" selected>Hall</option>
+      </select>
+
+      <label for="reverb">Space amount <span id="revLabel">large hall</span></label>
+      <input id="reverb" type="range" min="0" max="100" value="68" />
+
+      <label for="image">Image</label>
+      <select id="image">
+        <option value="stereo">Stereo</option>
+        <option value="mono">Mono</option>
+      </select>
+
+      <label for="depth">Water column <span id="depthLabel">mid</span></label>
+      <input id="depth" type="range" min="0" max="100" value="62" />
+
+      <label for="density">Phrase density <span id="denLabel">0.62</span></label>
+      <input id="density" type="range" min="20" max="100" value="62" />
+
+      <label for="seed">Seed</label>
+      <input id="seed" type="number" value="1971" />
+
+      <div class="actions">
+        <button class="primary" id="play">Compose & play</button>
+        <button class="ghost" id="replay" disabled>Replay</button>
+        <button class="ghost" id="stop" disabled>Stop</button>
+        <button class="ghost" id="download" disabled>Download 24-bit WAV</button>
+      </div>
+      <div class="status" id="status">Idle. Seed 1971 recalls the Payne & McVay song paper.</div>
+    </section>
+
+    <section class="panel">
+      <canvas id="spec" width="1400" height="640"></canvas>
+      <div class="meta" id="meta">
+        <span>Format <b>24-bit PCM</b></span>
+        <span>Rate <b>48 kHz</b></span>
+        <span id="chans">Channels <b>stereo</b></span>
+        <span id="struct">Structure <b>—</b></span>
+      </div>
+      <p class="notes">
+        <strong>Mournful cries</strong> are the classic signature: a tone rises a little, holds, then falls over four to ten seconds, mostly between 150 and 700 Hz, with a slow quiver and a long silence after.
+        <strong>Blue whale</strong> moans sit at 14–28 Hz; the audible mode pitches them up so you can hear the same shape.
+        Depth darkens the tone. Octave shifts the whole song. Space can be off, a short echo, or the hall. Mono is a true one-channel file so Audacity does not see a stereo pair.
+      </p>
+    </section>
+  </div>
+  <footer>Aether Song · MIT © 2026 TribalVoice · 48 kHz · 24-bit PCM · <a href="https://ko-fi.com/tribalvoice" target="_blank" rel="noopener">ko-fi.com/tribalvoice</a></footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const SR = 48000;
+let audioCtx = null;
+let currentSource = null;
+let lastBuffer = null;
+let lastBlob = null;
+let lastName = "whale-song.wav";
+
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const rand = (rng, a, b) => a + (b - a) * rng();
+const choice = (rng, arr) => arr[(rng() * arr.length) | 0];
+
+function envADSR(n, a, d, s, r) {
+  const e = new Float32Array(n);
+  const ia = Math.max(1, (a * n) | 0);
+  const id = Math.max(1, (d * n) | 0);
+  const ir = Math.max(1, (r * n) | 0);
+  const sustainEnd = Math.max(ia + id, n - ir);
+  for (let i = 0; i < n; i++) {
+    let x;
+    if (i < ia) x = i / ia;
+    else if (i < ia + id) x = 1 - (1 - s) * ((i - ia) / id);
+    else if (i < sustainEnd) x = s;
+    else x = s * (1 - (i - sustainEnd) / Math.max(1, n - sustainEnd));
+    // raised cosine so attacks and releases do not click
+    e[i] = 0.5 - 0.5 * Math.cos(Math.PI * Math.max(0, Math.min(1, x)));
+  }
+  return e;
+}
+
+function addTone(buf, start, dur, f0, f1, opts) {
+  const n = Math.max(8, (dur * SR) | 0);
+  const s0 = (start * SR) | 0;
+  if (s0 >= buf.length) return;
+  const harmonics = opts.harmonics || 1;
+  const vib = opts.vib || 0;
+  const vibHz = opts.vibHz || 1.5;
+  const amp = opts.amp || 0.2;
+  const e = envADSR(n, opts.a ?? 0.22, opts.d ?? 0.18, opts.s ?? 0.82, opts.r ?? 0.34);
+  const twoPi = Math.PI * 2;
+  let phase = 0;
+  for (let i = 0; i < n; i++) {
+    const idx = s0 + i;
+    if (idx >= buf.length) break;
+    const t = i / SR;
+    const u = i / n;
+    // slow S-curve so the fall feels sung, not swept
+    const curve = u * u * (3 - 2 * u);
+    let f = f0 + (f1 - f0) * curve;
+    if (vib) f *= 1 + vib * Math.sin(twoPi * vibHz * t + vib * 2);
+    phase += twoPi * f / SR;
+    let s = 0;
+    for (let h = 1; h <= harmonics; h++) {
+      const roll = Math.pow(h, -(opts.slope || 1.7));
+      s += Math.sin(phase * h) * roll;
+    }
+    buf[idx] += s * e[i] * amp;
+  }
+}
+
+function compose(species, seconds, density, seed, blueMode, octave) {
+  const rng = mulberry32(seed);
+  const mono = new Float32Array(Math.floor(seconds * SR));
+  const themes = [];
+  let t = 0.6 + rng() * 0.5;
+  const pitch = Math.pow(2, octave);
+
+  function place(unit) {
+    if (t + unit.dur > seconds - 0.4) return false;
+    addTone(mono, t, unit.dur, unit.f0 * pitch, unit.f1 * pitch, unit);
+    t += unit.dur + unit.gap;
+    return true;
+  }
+
+  function cry() {
+    const peak = rand(rng, 280, 620);
+    const end = peak * rand(rng, 0.38, 0.62);
+    return {
+      kind: "cry",
+      f0: peak * rand(rng, 0.72, 0.88),
+      f1: end,
+      dur: rand(rng, 4.2, 9.5),
+      gap: rand(rng, 1.6, 3.4) * (1.25 - density * 0.45),
+      harmonics: 5,
+      slope: 1.85,
+      vib: rand(rng, 0.008, 0.018),
+      vibHz: rand(rng, 0.7, 1.8),
+      amp: rand(rng, 0.22, 0.32),
+      a: 0.18,
+      d: 0.22,
+      s: 0.78,
+      r: 0.36
+    };
+  }
+
+  function moan() {
+    const f = rand(rng, 140, 280);
+    return {
+      kind: "moan",
+      f0: f * 1.08,
+      f1: f * 0.9,
+      dur: rand(rng, 5.5, 11),
+      gap: rand(rng, 1.8, 3.6) * (1.2 - density * 0.35),
+      harmonics: 6,
+      slope: 1.55,
+      vib: 0.012,
+      vibHz: rand(rng, 0.45, 1.1),
+      amp: rand(rng, 0.24, 0.34),
+      a: 0.28,
+      s: 0.88,
+      r: 0.32
+    };
+  }
+
+  function whoop() {
+    const low = rand(rng, 160, 260);
+    return {
+      kind: "whoop",
+      f0: low,
+      f1: low * rand(rng, 1.7, 2.4),
+      dur: rand(rng, 2.4, 4.2),
+      gap: rand(rng, 0.6, 1.4),
+      harmonics: 4,
+      slope: 1.9,
+      vib: 0.007,
+      vibHz: 1.4,
+      amp: rand(rng, 0.16, 0.24),
+      a: 0.2,
+      s: 0.7,
+      r: 0.28
+    };
+  }
+
+  if (species === "humpback" || species === "chorus") {
+    const nThemes = seconds < 20 ? 1 : 2;
+    for (let th = 0; th < nThemes && t < seconds - 2; th++) {
+      const phrase = [cry(), moan()];
+      if (rng() > 0.45) phrase.push(whoop(), cry());
+      else phrase.push(cry());
+      const reps = 2;
+      themes.push({ name: "mournful phrase " + (th + 1), units: phrase.length, reps });
+      for (let r = 0; r < reps; r++) {
+        for (const base of phrase) {
+          const unit = Object.assign({}, base);
+          unit.f0 *= 0.98 + rng() * 0.04;
+          unit.f1 *= 0.98 + rng() * 0.04;
+          unit.dur *= 0.94 + rng() * 0.1;
+          if (!place(unit)) break;
+        }
+        t += 0.8 + rng() * 0.6;
+      }
+      t += 1.2;
+    }
+  }
+
+  if (species === "blue" || species === "chorus") {
+    const shift = species === "blue" && blueMode === "true" ? 1 : 12;
+    const timeScale = shift === 1 ? 1 : 0.7;
+    const n = 2 + ((seconds / 22) | 0);
+    for (let i = 0; i < n && t < seconds - 1; i++) {
+      const f = rand(rng, 16, 26) * shift;
+      const unit = {
+        kind: "moan",
+        f0: f * 1.04,
+        f1: f * 0.9,
+        dur: rand(rng, 8, 16) * timeScale,
+        gap: rand(rng, 2.2, 4.5) * timeScale,
+        harmonics: 3,
+        slope: 2.1,
+        amp: species === "chorus" ? 0.12 : 0.36,
+        vib: 0.004,
+        vibHz: 0.25 * Math.min(shift, 4),
+        a: 0.3,
+        s: 0.92,
+        r: 0.24
+      };
+      themes.push({ name: "blue moan", units: 1, reps: 1 });
+      place(unit);
+    }
+  }
+
+  if (species === "orca") {
+    const n = 3 + ((seconds * density / 10) | 0);
+    for (let i = 0; i < n && t < seconds - 0.8; i++) {
+      const f0 = rand(rng, 1800, 4200);
+      const unit = {
+        kind: "whistle",
+        f0,
+        f1: f0 * (0.7 + rng() * 0.55),
+        dur: rand(rng, 1.4, 3.2),
+        gap: rand(rng, 0.5, 1.2),
+        harmonics: 2,
+        slope: 2.2,
+        vib: 0.008,
+        vibHz: rand(rng, 2, 4),
+        amp: 0.16,
+        a: 0.1,
+        s: 0.7,
+        r: 0.22
+      };
+      themes.push({ name: "orca whistle", units: 1, reps: 1 });
+      place(unit);
+    }
+  }
+
+  return { mono, themes };
+}
+
+function wetMixSafe(v) {
+  return Math.max(0, Math.min(1, v));
+}
+
+function colorize(monoSrc, depth, space, reverbAmt, levelDb, image) {
+  const n = monoSrc.length;
+  const dry = new Float32Array(n);
+  const absorb = lerp(2400, 900, depth);
+  const a = 1 - Math.exp(-2 * Math.PI * absorb / SR);
+  let lp = 0;
+  for (let i = 0; i < n; i++) {
+    lp += a * (monoSrc[i] - lp);
+    dry[i] = lp;
+  }
+
+  const wetMix = space === "off" ? 0 : wetMixSafe(reverbAmt);
+  const tail = space === "hall" ? (wetMix * 4.2 * SR) | 0 : space === "echo" ? (1.6 * SR) | 0 : 0;
+  const frames = n + tail;
+  const left = new Float32Array(frames);
+  const right = new Float32Array(frames);
+  const stereo = image !== "mono";
+  if (space === "hall" && wetMix > 0.01) {
+    const scale = (SR / 44100) * (0.9 + wetMix * 0.75);
+    const combs = [1116, 1188, 1277, 1356, 1422, 1491, 1557, 1617].map((d) => Math.max(64, (d * scale) | 0));
+    const mem = combs.map((d) => new Float32Array(d));
+    const idx = combs.map(() => 0);
+    const lpState = combs.map(() => 0);
+    const fb = 0.72 + wetMix * 0.22;
+    const damp = 0.1 + (1 - wetMix) * 0.22;
+    const pre = (0.03 * SR) | 0;
+    const haas = (0.012 * SR) | 0;
+    const dryG = 1 - wetMix * 0.45;
+    const wetG = 0.65 + wetMix * 0.7;
+    const wet = new Float32Array(frames);
+    for (let i = 0; i < frames; i++) {
+      const x = i >= pre && i - pre < n ? dry[i - pre] : 0;
+      let sum = 0;
+      for (let k = 0; k < combs.length; k++) {
+        const y = mem[k][idx[k]];
+        lpState[k] += damp * (y - lpState[k]);
+        mem[k][idx[k]] = x + lpState[k] * fb;
+        idx[k] = (idx[k] + 1) % combs[k];
+        sum += y;
+      }
+      wet[i] = sum * 0.15;
+    }
+    for (let i = 0; i < frames; i++) {
+      const dryNow = i < n ? dry[i] : 0;
+      const w = wet[i] * wetG;
+      left[i] = dryNow * dryG + w;
+      right[i] = stereo ? dryNow * dryG + w * 0.92 + (i >= haas ? wet[i - haas] : 0) * wetG * 0.18 : left[i];
+    }
+  } else if (space === "echo" && wetMix > 0.01) {
+    const taps = [0.18, 0.34, 0.52].map((t, i) => ({ d: (t * SR) | 0, g: (0.42 - i * 0.1) * wetMix }));
+    for (let i = 0; i < frames; i++) {
+      const dryNow = i < n ? dry[i] : 0;
+      let echo = 0;
+      for (const tap of taps) if (i >= tap.d && i - tap.d < n) echo += dry[i - tap.d] * tap.g;
+      left[i] = dryNow + echo;
+      right[i] = stereo ? dryNow + echo * 0.9 : left[i];
+    }
+  } else {
+    for (let i = 0; i < n; i++) {
+      left[i] = dry[i];
+      right[i] = dry[i];
+    }
+  }
+
+  let peak = 1e-8;
+  for (let i = 0; i < frames; i++) peak = Math.max(peak, Math.abs(left[i]), Math.abs(right[i]));
+  const channels = stereo ? 2 : 1;
+  const gain = (0.94 / peak) * Math.pow(10, levelDb / 20);
+  const interleaved = new Float32Array(frames * channels);
+  for (let i = 0; i < frames; i++) {
+    if (channels === 1) interleaved[i] = clamp(left[i] * gain, -1, 1);
+    else {
+      interleaved[i * 2] = clamp(left[i] * gain, -1, 1);
+      interleaved[i * 2 + 1] = clamp(right[i] * gain, -1, 1);
+    }
+  }
+  return { samples: interleaved, channels };
+}
+
+function drawSpectrogram(samples, channels) {
+  const canvas = $("spec");
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = "#021018";
+  ctx.fillRect(0, 0, W, H);
+  const cols = 220;
+  const n = samples.length / (channels || 2);
+  const win = 1024;
+  const hop = Math.max(win, (n / cols) | 0);
+  const bins = 160;
+  const img = ctx.createImageData(cols, bins);
+  const ch = channels || 2;
+  for (let c = 0; c < cols; c++) {
+    const start = Math.min(n - win, c * hop);
+    const re = new Float32Array(win);
+    for (let i = 0; i < win; i++) {
+      const w = 0.5 - 0.5 * Math.cos((Math.PI * 2 * i) / (win - 1));
+      re[i] = samples[(start + i) * ch] * w;
+    }
+    // radix-2 DFT of a decimated window: 256-point for speed
+    const N = 256;
+    const rr = new Float32Array(N);
+    const ii = new Float32Array(N);
+    for (let i = 0; i < N; i++) rr[i] = re[(i * win / N) | 0];
+    for (let len = 2; len <= N; len <<= 1) {
+      const half = len >> 1;
+      const ang = -Math.PI * 2 / len;
+      for (let i = 0; i < N; i += len) {
+        for (let j = 0; j < half; j++) {
+          const wr = Math.cos(ang * j), wi = Math.sin(ang * j);
+          const ar = rr[i + j], ai = ii[i + j];
+          const br = rr[i + j + half], bi = ii[i + j + half];
+          const tr = wr * br - wi * bi, ti = wr * bi + wi * br;
+          rr[i + j] = ar + tr; ii[i + j] = ai + ti;
+          rr[i + j + half] = ar - tr; ii[i + j + half] = ai - ti;
+        }
+      }
+    }
+    for (let i = 0, j = 0; i < N; i++) {
+      if (i < j) {
+        const tr = rr[i]; rr[i] = rr[j]; rr[j] = tr;
+        const ti = ii[i]; ii[i] = ii[j]; ii[j] = ti;
+      }
+      let m = N >> 1;
+      while (m >= 1 && j >= m) { j -= m; m >>= 1; }
+      j += m;
+    }
+    for (let b = 1; b < bins; b++) {
+      const mag = Math.hypot(rr[b], ii[b]) / N;
+      const db = 20 * Math.log10(mag + 1e-7);
+      const g = clamp((db + 78) / 62, 0, 1);
+      const y = bins - 1 - b;
+      const o = (y * cols + c) * 4;
+      img.data[o] = 4 + g * 40;
+      img.data[o + 1] = 18 + g * 190;
+      img.data[o + 2] = 28 + g * 150;
+      img.data[o + 3] = 255;
+    }
+  }
+  const tmp = document.createElement("canvas");
+  tmp.width = cols; tmp.height = bins;
+  tmp.getContext("2d").putImageData(img, 0, 0);
+  ctx.imageSmoothingEnabled = true;
+  ctx.drawImage(tmp, 0, 0, W, H);
+  ctx.strokeStyle = "rgba(215,255,244,0.25)";
+  ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
+}
+
+function encodeWav24(samples, sampleRate, channels) {
+  const frames = samples.length / channels;
+  const dataSize = frames * channels * 3;
+  const buffer = new ArrayBuffer(44 + dataSize);
+  const view = new DataView(buffer);
+  const ws = (o, s) => { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); };
+  ws(0, "RIFF");
+  view.setUint32(4, 36 + dataSize, true);
+  ws(8, "WAVE");
+  ws(12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, channels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * channels * 3, true);
+  view.setUint16(32, channels * 3, true);
+  view.setUint16(34, 24, true);
+  ws(36, "data");
+  view.setUint32(40, dataSize, true);
+  let offset = 44;
+  for (let i = 0; i < samples.length; i++) {
+    let v = Math.round(clamp(samples[i], -1, 1) * 8388607);
+    if (v < 0) v = 0x1000000 + v;
+    view.setUint8(offset, v & 0xff);
+    view.setUint8(offset + 1, (v >> 8) & 0xff);
+    view.setUint8(offset + 2, (v >> 16) & 0xff);
+    offset += 3;
+  }
+  return new Blob([buffer], { type: "audio/wav" });
+}
+
+function stopPlayback() {
+  if (currentSource) {
+    try { currentSource.stop(); } catch (e) {}
+    currentSource = null;
+  }
+  $("stop").disabled = true;
+}
+
+let lastChannels = 2;
+
+async function playInterleaved(samples, channels) {
+  if (!samples) return;
+  if (!audioCtx) audioCtx = new AudioContext();
+  if (audioCtx.state === "suspended") await audioCtx.resume();
+  stopPlayback();
+  const ch = channels || 2;
+  const frames = samples.length / ch;
+  const audioBuf = audioCtx.createBuffer(ch, frames, SR);
+  for (let c = 0; c < ch; c++) {
+    const data = audioBuf.getChannelData(c);
+    for (let i = 0; i < frames; i++) data[i] = samples[i * ch + c];
+  }
+  const src = audioCtx.createBufferSource();
+  src.buffer = audioBuf;
+  src.connect(audioCtx.destination);
+  src.onended = () => { $("stop").disabled = true; currentSource = null; };
+  src.start();
+  currentSource = src;
+  $("stop").disabled = false;
+}
+
+async function composeAndPlay() {
+  const species = $("species").value;
+  const seconds = +$("duration").value;
+  const depth = +$("depth").value / 100;
+  const density = +$("density").value / 100;
+  const seed = ($("seed").value | 0) || 1;
+  const blueMode = $("hear").value;
+  const octave = +$("octave").value;
+  const reverbAmt = +$("reverb").value / 100;
+  const space = $("space").value;
+  const image = $("image").value;
+  const levelDb = +$("level").value;
+  $("play").disabled = true;
+  $("status").textContent = "Composing units, phrases, and themes…";
+  await new Promise((r) => setTimeout(r, 30));
+  const t0 = performance.now();
+  const { mono, themes } = compose(species, seconds, density, seed, blueMode, octave);
+  const { samples, channels } = colorize(mono, depth, space, reverbAmt, levelDb, image);
+  lastBuffer = samples;
+  lastChannels = channels;
+  lastName = `aether-song-${species}-${seed}-${channels === 1 ? "mono" : "stereo"}-24bit.wav`;
+  lastBlob = encodeWav24(samples, SR, channels);
+  drawSpectrogram(samples, channels);
+  const summary = themes.slice(0, 4).map((t) => t.name).join(", ");
+  $("struct").innerHTML = `Structure <b>${themes.length} phrases</b>`;
+  $("chans").innerHTML = `Channels <b>${channels === 1 ? "mono" : "stereo"}</b>`;
+  $("status").textContent = `Ready in ${((performance.now() - t0) / 1000).toFixed(1)} s · ${summary || "song"} · ${(lastBlob.size / 1048576).toFixed(1)} MB`;
+  $("download").disabled = false;
+  $("replay").disabled = false;
+  $("play").disabled = false;
+  await playInterleaved(samples, channels);
+}
+
+$("duration").oninput = () => { $("durLabel").textContent = $("duration").value + " s"; };
+$("density").oninput = () => { $("denLabel").textContent = (+$("density").value / 100).toFixed(2); };
+$("depth").oninput = () => {
+  const v = +$("depth").value;
+  $("depthLabel").textContent = v < 33 ? "shallow" : v < 66 ? "mid" : "deep";
+};
+function octName(v) {
+  const names = ["~A1", "~A2", "~A3", "~A4", "~A5"];
+  return (v > 0 ? "+" : "") + v + " · " + names[v + 2];
+}
+$("octave").oninput = () => { $("octLabel").textContent = octName(+$("octave").value); };
+$("level").oninput = () => {
+  const v = +$("level").value;
+  $("levelLabel").textContent = (v > 0 ? "+" : "") + v + " dB";
+};
+$("reverb").oninput = () => {
+  const space = $("space").value;
+  const v = +$("reverb").value;
+  if (space === "off") $("revLabel").textContent = "unused";
+  else if (space === "echo") $("revLabel").textContent = v < 30 ? "near" : v < 70 ? "canyon" : "far";
+  else $("revLabel").textContent = v < 8 ? "dry" : v < 30 ? "room" : v < 60 ? "hall" : "large hall";
+};
+$("space").oninput = () => { $("reverb").oninput(); $("reverb").disabled = $("space").value === "off"; };
+$("play").onclick = () => composeAndPlay().catch((err) => {
+  $("status").textContent = "Could not compose: " + err.message;
+  $("play").disabled = false;
+});
+$("replay").onclick = () => {
+  if (!lastBuffer) return;
+  playInterleaved(lastBuffer, lastChannels).catch((err) => {
+    $("status").textContent = "Could not replay: " + err.message;
+  });
+};
+$("stop").onclick = stopPlayback;
+$("download").onclick = () => {
+  if (!lastBlob) return;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(lastBlob);
+  a.download = lastName;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+};
+</script>
+</body>
+</html>
