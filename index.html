@@ -130,111 +130,179 @@
       <path d="M58 38c6-10 16-12 20-8-8 2-12 6-14 12-2-1-4-3-6-4z" fill="#d7fff4"/>
       <circle cx="34" cy="44" r="1.4" fill="#04231d"/>
     </svg>
-    <div>
+      <div>
       <h1>Aether <span>song</span></h1>
-      <p class="lede">An Aether instrument for dark ambient source. Long mournful cries, dry or with echo or hall, mono or stereo. Download a 24-bit / 48 kHz PCM WAV for the DAW.</p>
+      <p class="lede" data-i18n="lede">An Aether instrument for dark ambient source. Long mournful cries, dry or with echo or hall, mono or stereo. Download a 24-bit / 48 kHz PCM WAV for the DAW.</p>
+      <label for="lang">Language</label>
+      <select id="lang">
+        <option value="en">English</option>
+        <option value="pt-BR">Português (Brasil)</option>
+        <option value="es">Español</option>
+      </select>
     </div>
   </header>
 
   <div class="grid">
     <section class="panel">
-      <label for="species">Species model</label>
+      <label for="species" data-i18n="species">Species model</label>
       <select id="species">
-        <option value="humpback">Mournful cries</option>
-        <option value="blue">Blue whale moan</option>
-        <option value="orca">Orca pod</option>
-        <option value="chorus">Cries with a distant moan</option>
+        <option value="humpback" data-i18n="sp-humpback">Mournful cries</option>
+        <option value="blue" data-i18n="sp-blue">Blue whale moan</option>
+        <option value="orca" data-i18n="sp-orca">Orca pod</option>
+        <option value="chorus" data-i18n="sp-chorus">Cries with a distant moan</option>
       </select>
 
-      <label for="hear">Blue-whale hearing</label>
+      <label for="hear" data-i18n="hear">Blue-whale hearing</label>
       <select id="hear">
-        <option value="shifted">Pitch-shifted ×16 (audible)</option>
-        <option value="true">True infrasonic (mostly inaudible)</option>
+        <option value="shifted" data-i18n="hear-shifted">Pitch-shifted ×16 (audible)</option>
+        <option value="true" data-i18n="hear-true">True infrasonic (mostly inaudible)</option>
       </select>
 
-      <label for="duration">Duration <span id="durLabel">36 s</span></label>
+      <label for="duration"><span data-i18n="duration">Duration</span> <span id="durLabel">36 s</span></label>
       <input id="duration" type="range" min="12" max="90" value="36" />
 
-      <label for="octave">Octave <span id="octLabel">0 · ~A3</span></label>
+      <label for="octave"><span data-i18n="octave">Octave</span> <span id="octLabel">0 · ~A3</span></label>
       <input id="octave" type="range" min="-2" max="2" step="1" value="0" />
 
-      <label for="level">Level <span id="levelLabel">−6 dB</span></label>
+      <label for="level"><span data-i18n="level">Level</span> <span id="levelLabel">−6 dB</span></label>
       <input id="level" type="range" min="-24" max="0" step="1" value="-6" />
 
-      <label for="space">Space</label>
+      <label for="space" data-i18n="space">Space</label>
       <select id="space">
-        <option value="off">Off — dry cry</option>
-        <option value="echo">Echo</option>
-        <option value="hall" selected>Hall</option>
+        <option value="off" data-i18n="space-off">Off — dry cry</option>
+        <option value="echo" data-i18n="space-echo">Echo</option>
+        <option value="hall" selected data-i18n="space-hall">Hall</option>
       </select>
 
-      <label for="reverb">Space amount <span id="revLabel">large hall</span></label>
+      <label for="reverb"><span data-i18n="amount">Space amount</span> <span id="revLabel">large hall</span></label>
       <input id="reverb" type="range" min="0" max="100" value="68" />
 
-      <label for="image">Image</label>
+      <label for="image" data-i18n="image">Image</label>
       <select id="image">
-        <option value="stereo">Stereo</option>
-        <option value="mono">Mono</option>
+        <option value="stereo" data-i18n="stereo">Stereo</option>
+        <option value="mono" data-i18n="mono">Mono</option>
       </select>
 
-      <label for="depth">Water column <span id="depthLabel">mid</span></label>
+      <label for="depth"><span data-i18n="depth">Water column</span> <span id="depthLabel">mid</span></label>
       <input id="depth" type="range" min="0" max="100" value="62" />
 
-      <label for="density">Phrase density <span id="denLabel">0.62</span></label>
+      <label for="density"><span data-i18n="density">Phrase density</span> <span id="denLabel">0.62</span></label>
       <input id="density" type="range" min="20" max="100" value="62" />
 
-      <label for="mode">Playback</label>
+      <label for="mode" data-i18n="playback">Playback</label>
       <select id="mode">
-        <option value="take">Take — one file</option>
-        <option value="live">Live — evolving</option>
+        <option value="take" data-i18n="mode-take">Take — one file</option>
+        <option value="live" data-i18n="mode-live">Live — evolving</option>
       </select>
 
-      <label for="hold">Seed hold <span id="holdLabel">45 s</span></label>
+      <label for="hold"><span data-i18n="hold">Seed hold</span> <span id="holdLabel">45 s</span></label>
       <input id="hold" type="range" min="20" max="180" value="45" />
 
-      <label for="session">Live session</label>
+      <label for="session" data-i18n="session">Live session</label>
       <select id="session">
-        <option value="0">Until stop</option>
-        <option value="900">15 minutes</option>
-        <option value="3600">1 hour</option>
-        <option value="7200">2 hours</option>
-        <option value="14400">4 hours</option>
+        <option value="0" data-i18n="until-stop">Until stop</option>
+        <option value="900" data-i18n="min15">15 minutes</option>
+        <option value="3600" data-i18n="hour1">1 hour</option>
+        <option value="7200" data-i18n="hour2">2 hours</option>
+        <option value="14400" data-i18n="hour4">4 hours</option>
       </select>
 
-      <label for="seed">Seed</label>
+      <label for="seed" data-i18n="seed">Seed</label>
       <input id="seed" type="number" value="1971" />
 
       <div class="actions">
-        <button class="primary" id="play">Compose & play</button>
-        <button class="ghost" id="live">Start live</button>
-        <button class="ghost" id="replay" disabled>Replay</button>
-        <button class="ghost" id="stop" disabled>Stop</button>
-        <button class="ghost" id="download" disabled>Download 24-bit WAV</button>
+        <button class="primary" id="play" data-i18n="compose">Compose & play</button>
+        <button class="ghost" id="live" data-i18n="start-live">Start live</button>
+        <button class="ghost" id="replay" data-i18n="replay" disabled>Replay</button>
+        <button class="ghost" id="stop" data-i18n="stop" disabled>Stop</button>
+        <button class="ghost" id="download" data-i18n="download" disabled>Download 24-bit WAV</button>
       </div>
-      <div class="status" id="status">Idle. Seed 1971 recalls the Payne & McVay song paper.</div>
+      <div class="status" id="status" data-i18n="idle">Idle. Seed 1971 recalls the Payne & McVay song paper.</div>
     </section>
 
     <section class="panel">
       <canvas id="spec" width="1400" height="640"></canvas>
       <div class="meta" id="meta">
-        <span>Format <b>24-bit PCM</b></span>
-        <span>Rate <b>48 kHz</b></span>
-        <span id="chans">Channels <b>stereo</b></span>
-        <span id="struct">Structure <b>—</b></span>
+        <span><span data-i18n="format">Format</span> <b>24-bit PCM</b></span>
+        <span><span data-i18n="rate">Rate</span> <b>48 kHz</b></span>
+        <span id="chans"><span data-i18n="channels">Channels</span> <b id="chanWord">stereo</b></span>
+        <span id="struct"><span data-i18n="structure">Structure</span> <b id="structWord">—</b></span>
       </div>
-      <p class="notes">
-        <strong>Mournful cries</strong> are the classic signature: a tone rises a little, holds, then falls over four to ten seconds, mostly between 150 and 700 Hz, with a slow quiver and a long silence after.
-        <strong>Blue whale</strong> moans sit at 14–28 Hz; the audible mode pitches them up so you can hear the same shape.
-        Depth darkens the tone. Octave shifts the whole song. Space can be off, a short echo, or the hall. Mono is a true one-channel file. Live plays the next seed while this one sounds, so a session can run for hours without building a giant file.
-      </p>
+      <p class="notes" id="notes" data-i18n-html="notes"></p>
     </section>
   </div>
-  <footer>Aether Song · MIT © 2026 TribalVoice · 48 kHz · 24-bit PCM · <a href="https://ko-fi.com/tribalvoice" target="_blank" rel="noopener">ko-fi.com/tribalvoice</a></footer>
+  <footer><span data-i18n="footer">Aether Song · MIT © 2026 TribalVoice · 48 kHz · 24-bit PCM ·</span> <a href="https://ko-fi.com/tribalvoice" target="_blank" rel="noopener">ko-fi.com/tribalvoice</a></footer>
 </div>
 
 <script>
 const $ = (id) => document.getElementById(id);
 const SR = 48000;
+const I18N = {
+  en: {
+    lede: "An Aether instrument for dark ambient source. Long mournful cries, dry or with echo or hall, mono or stereo. Download a 24-bit / 48 kHz PCM WAV for the DAW.",
+    species: "Species model", "sp-humpback": "Mournful cries", "sp-blue": "Blue whale moan", "sp-orca": "Orca pod", "sp-chorus": "Cries with a distant moan",
+    hear: "Blue-whale hearing", "hear-shifted": "Pitch-shifted ×16 (audible)", "hear-true": "True infrasonic (mostly inaudible)",
+    duration: "Duration", octave: "Octave", level: "Level", space: "Space", "space-off": "Off — dry cry", "space-echo": "Echo", "space-hall": "Hall",
+    amount: "Space amount", image: "Image", stereo: "Stereo", mono: "Mono", depth: "Water column", density: "Phrase density",
+    playback: "Playback", "mode-take": "Take — one file", "mode-live": "Live — evolving", hold: "Seed hold", session: "Live session",
+    "until-stop": "Until stop", min15: "15 minutes", hour1: "1 hour", hour2: "2 hours", hour4: "4 hours", seed: "Seed",
+    compose: "Compose & play", "start-live": "Start live", replay: "Replay", stop: "Stop", download: "Download 24-bit WAV",
+    idle: "Idle. Seed 1971 recalls the Payne & McVay song paper.",
+    format: "Format", rate: "Rate", channels: "Channels", structure: "Structure",
+    notes: "<strong>Mournful cries</strong> are the classic signature: a tone rises a little, holds, then falls over four to ten seconds, mostly between 150 and 700 Hz, with a slow quiver and a long silence after. <strong>Blue whale</strong> moans sit at 14–28 Hz; the audible mode pitches them up so you can hear the same shape. Depth darkens the tone. Octave shifts the whole song. Space can be off, a short echo, or the hall. Mono is a true one-channel file. Live plays the next seed while this one sounds, so a session can run for hours without building a giant file.",
+    footer: "Aether Song · MIT © 2026 TribalVoice · 48 kHz · 24-bit PCM ·",
+    shallow: "shallow", mid: "mid", deep: "deep", unused: "unused", near: "near", canyon: "canyon", far: "far", dry: "dry", room: "room", hall: "hall", "large-hall": "large hall",
+    composing: "Composing units, phrases, and themes…", ready: "Ready in", phrases: "phrases", cry: "cry",
+    opening: "Opening the first cry…", finished: "Live session finished.", live: "Live",
+    errCompose: "Could not compose: ", errReplay: "Could not replay: ", errLive: "Could not start live: "
+  },
+  "pt-BR": {
+    lede: "Um instrumento Aether para fonte de dark ambient. Cantos longos e lamentosos, secos ou com eco ou hall, mono ou estéreo. Baixe um WAV PCM de 24 bits / 48 kHz para a DAW.",
+    species: "Modelo de espécie", "sp-humpback": "Cantos lamentosos", "sp-blue": "Gemido de baleia-azul", "sp-orca": "Grupo de orcas", "sp-chorus": "Cantos com um gemido distante",
+    hear: "Audição da baleia-azul", "hear-shifted": "Altura ×16 (audível)", "hear-true": "Infrassom real (quase inaudível)",
+    duration: "Duração", octave: "Oitava", level: "Nível", space: "Espaço", "space-off": "Desligado — canto seco", "space-echo": "Eco", "space-hall": "Hall",
+    amount: "Quantidade de espaço", image: "Imagem", stereo: "Estéreo", mono: "Mono", depth: "Coluna d'água", density: "Densidade da frase",
+    playback: "Reprodução", "mode-take": "Take — um arquivo", "mode-live": "Ao vivo — em evolução", hold: "Duração da semente", session: "Sessão ao vivo",
+    "until-stop": "Até parar", min15: "15 minutos", hour1: "1 hora", hour2: "2 horas", hour4: "4 horas", seed: "Semente",
+    compose: "Compor e tocar", "start-live": "Iniciar ao vivo", replay: "Repetir", stop: "Parar", download: "Baixar WAV 24 bits",
+    idle: "Em espera. A semente 1971 lembra o artigo de Payne e McVay.",
+    format: "Formato", rate: "Taxa", channels: "Canais", structure: "Estrutura",
+    notes: "<strong>Cantos lamentosos</strong> são a assinatura clássica: o tom sobe um pouco, sustenta e cai ao longo de quatro a dez segundos, sobretudo entre 150 e 700 Hz, com um tremor lento e um silêncio longo depois. Os gemidos da <strong>baleia-azul</strong> ficam em 14–28 Hz; o modo audível sobe a altura para que a mesma forma possa ser ouvida. A profundidade escurece o tom. A oitava desloca a canção inteira. O espaço pode ficar desligado, um eco curto ou o hall. Mono é um arquivo de um canal de verdade. O modo ao vivo toca a próxima semente enquanto esta ainda soa, então a sessão pode durar horas sem montar um arquivo enorme.",
+    footer: "Aether Song · MIT © 2026 TribalVoice · 48 kHz · PCM 24 bits ·",
+    shallow: "rasa", mid: "média", deep: "profunda", unused: "sem uso", near: "perto", canyon: "cânion", far: "longe", dry: "seco", room: "sala", hall: "hall", "large-hall": "hall grande",
+    composing: "Compondo unidades, frases e temas…", ready: "Pronto em", phrases: "frases", cry: "canto",
+    opening: "Abrindo o primeiro canto…", finished: "Sessão ao vivo encerrada.", live: "Ao vivo",
+    errCompose: "Não foi possível compor: ", errReplay: "Não foi possível repetir: ", errLive: "Não foi possível iniciar ao vivo: "
+  },
+  es: {
+    lede: "Un instrumento Aether para fuente de dark ambient. Cantos largos y lastimeros, secos o con eco o hall, mono o estéreo. Descarga un WAV PCM de 24 bits / 48 kHz para el DAW.",
+    species: "Modelo de especie", "sp-humpback": "Cantos lastimeros", "sp-blue": "Gemido de ballena azul", "sp-orca": "Grupo de orcas", "sp-chorus": "Cantos con un gemido lejano",
+    hear: "Audición de la ballena azul", "hear-shifted": "Altura ×16 (audible)", "hear-true": "Infrasonido real (casi inaudible)",
+    duration: "Duración", octave: "Octava", level: "Nivel", space: "Espacio", "space-off": "Apagado — canto seco", "space-echo": "Eco", "space-hall": "Hall",
+    amount: "Cantidad de espacio", image: "Imagen", stereo: "Estéreo", mono: "Mono", depth: "Columna de agua", density: "Densidad de la frase",
+    playback: "Reproducción", "mode-take": "Toma — un archivo", "mode-live": "En vivo — en evolución", hold: "Duración de la semilla", session: "Sesión en vivo",
+    "until-stop": "Hasta parar", min15: "15 minutos", hour1: "1 hora", hour2: "2 horas", hour4: "4 horas", seed: "Semilla",
+    compose: "Componer y reproducir", "start-live": "Iniciar en vivo", replay: "Repetir", stop: "Parar", download: "Descargar WAV de 24 bits",
+    idle: "En espera. La semilla 1971 recuerda el artículo de Payne y McVay.",
+    format: "Formato", rate: "Frecuencia", channels: "Canales", structure: "Estructura",
+    notes: "<strong>Los cantos lastimeros</strong> son la firma clásica: el tono sube un poco, se sostiene y cae durante cuatro a diez segundos, sobre todo entre 150 y 700 Hz, con un temblor lento y un silencio largo después. Los gemidos de la <strong>ballena azul</strong> están en 14–28 Hz; el modo audible sube la altura para que se oiga la misma forma. La profundidad oscurece el tono. La octava desplaza toda la canción. El espacio puede estar apagado, ser un eco corto o el hall. Mono es un archivo de un solo canal de verdad. El modo en vivo reproduce la siguiente semilla mientras esta aún suena, así que la sesión puede durar horas sin construir un archivo enorme.",
+    footer: "Aether Song · MIT © 2026 TribalVoice · 48 kHz · PCM de 24 bits ·",
+    shallow: "poco profunda", mid: "media", deep: "profunda", unused: "sin uso", near: "cerca", canyon: "cañón", far: "lejos", dry: "seco", room: "sala", hall: "hall", "large-hall": "hall grande",
+    composing: "Componiendo unidades, frases y temas…", ready: "Listo en", phrases: "frases", cry: "canto",
+    opening: "Abriendo el primer canto…", finished: "Sesión en vivo terminada.", live: "En vivo",
+    errCompose: "No se pudo componer: ", errReplay: "No se pudo repetir: ", errLive: "No se pudo iniciar en vivo: "
+  }
+};
+let lang = localStorage.getItem("aether-song-lang") || "en";
+function t(key) { return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key; }
+function applyLang() {
+  document.documentElement.lang = lang === "pt-BR" ? "pt-BR" : lang;
+  document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-html]").forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
+  $("depth").oninput();
+  $("reverb").oninput();
+  if (!$("status").dataset.live) $("status").textContent = t("idle");
+}
 let audioCtx = null;
 let currentSource = null;
 let lastBuffer = null;
@@ -702,7 +770,7 @@ function queueLiveSegment() {
   const hold = +$("hold").value;
   const session = +$("session").value;
   if (session && audioCtx.currentTime >= liveEnd) {
-    $("status").textContent = "Live session finished.";
+    $("status").textContent = t("finished");
     stopPlayback();
     return;
   }
@@ -732,8 +800,9 @@ function queueLiveSegment() {
   };
   liveNext = t + seconds - fade;
   const summary = themes.slice(0, 2).map((th) => th.name).join(", ");
-  $("status").textContent = `Live · seed ${seed} · ${seconds}s · ${summary || "cry"}`;
-  $("struct").innerHTML = `Structure <b>${themes.length} phrases</b>`;
+  $("status").dataset.live = "1";
+  $("status").textContent = `${t("live")} · ${t("seed").toLowerCase()} ${seed} · ${seconds}s · ${summary || t("cry")}`;
+  $("structWord").textContent = themes.length + " " + t("phrases");
   const wait = Math.max(250, (t - audioCtx.currentTime - 1.5) * 1000);
   liveTimer = setTimeout(queueLiveSegment, wait);
 }
@@ -748,7 +817,8 @@ async function startLive() {
   liveNext = audioCtx.currentTime + 0.12;
   $("stop").disabled = false;
   $("download").disabled = true;
-  $("status").textContent = "Opening the first cry…";
+  $("status").dataset.live = "1";
+  $("status").textContent = t("opening");
   queueLiveSegment();
 }
 
@@ -768,7 +838,7 @@ async function composeAndPlay() {
   const image = $("image").value;
   const levelDb = +$("level").value;
   $("play").disabled = true;
-  $("status").textContent = "Composing units, phrases, and themes…";
+  $("status").textContent = t("composing");
   await new Promise((r) => setTimeout(r, 30));
   const t0 = performance.now();
   const { mono, themes } = compose(species, seconds, density, seed, blueMode, octave);
@@ -779,9 +849,9 @@ async function composeAndPlay() {
   lastBlob = encodeWav24(samples, SR, channels);
   drawSpectrogram(samples, channels);
   const summary = themes.slice(0, 4).map((t) => t.name).join(", ");
-  $("struct").innerHTML = `Structure <b>${themes.length} phrases</b>`;
-  $("chans").innerHTML = `Channels <b>${channels === 1 ? "mono" : "stereo"}</b>`;
-  $("status").textContent = `Ready in ${((performance.now() - t0) / 1000).toFixed(1)} s · ${summary || "song"} · ${(lastBlob.size / 1048576).toFixed(1)} MB`;
+  $("structWord").textContent = themes.length + " " + t("phrases");
+  $("chanWord").textContent = channels === 1 ? t("mono") : t("stereo");
+  $("status").textContent = `${t("ready")} ${((performance.now() - t0) / 1000).toFixed(1)} s · ${summary || t("cry")} · ${(lastBlob.size / 1048576).toFixed(1)} MB`;
   $("download").disabled = false;
   $("replay").disabled = false;
   $("play").disabled = false;
@@ -792,7 +862,7 @@ $("duration").oninput = () => { $("durLabel").textContent = $("duration").value 
 $("density").oninput = () => { $("denLabel").textContent = (+$("density").value / 100).toFixed(2); };
 $("depth").oninput = () => {
   const v = +$("depth").value;
-  $("depthLabel").textContent = v < 33 ? "shallow" : v < 66 ? "mid" : "deep";
+  $("depthLabel").textContent = v < 33 ? t("shallow") : v < 66 ? t("mid") : t("deep");
 };
 function octName(v) {
   const names = ["~A1", "~A2", "~A3", "~A4", "~A5"];
@@ -806,24 +876,24 @@ $("level").oninput = () => {
 $("reverb").oninput = () => {
   const space = $("space").value;
   const v = +$("reverb").value;
-  if (space === "off") $("revLabel").textContent = "unused";
-  else if (space === "echo") $("revLabel").textContent = v < 30 ? "near" : v < 70 ? "canyon" : "far";
-  else $("revLabel").textContent = v < 8 ? "dry" : v < 30 ? "room" : v < 60 ? "hall" : "large hall";
+  if (space === "off") $("revLabel").textContent = t("unused");
+  else if (space === "echo") $("revLabel").textContent = v < 30 ? t("near") : v < 70 ? t("canyon") : t("far");
+  else $("revLabel").textContent = v < 8 ? t("dry") : v < 30 ? t("room") : v < 60 ? t("hall") : t("large-hall");
 };
 $("space").oninput = () => { $("reverb").oninput(); $("reverb").disabled = $("space").value === "off"; };
 $("hold").oninput = () => { $("holdLabel").textContent = $("hold").value + " s"; };
 $("live").onclick = () => startLive().catch((err) => {
-  $("status").textContent = "Could not start live: " + err.message;
+  $("status").textContent = t("errLive") + err.message;
   stopPlayback();
 });
 $("play").onclick = () => composeAndPlay().catch((err) => {
-  $("status").textContent = "Could not compose: " + err.message;
+  $("status").textContent = t("errCompose") + err.message;
   $("play").disabled = false;
 });
 $("replay").onclick = () => {
   if (!lastBuffer) return;
   playInterleaved(lastBuffer, lastChannels).catch((err) => {
-    $("status").textContent = "Could not replay: " + err.message;
+    $("status").textContent = t("errReplay") + err.message;
   });
 };
 $("stop").onclick = stopPlayback;
@@ -835,6 +905,13 @@ $("download").onclick = () => {
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 };
+$("lang").value = lang;
+$("lang").onchange = () => {
+  lang = $("lang").value;
+  localStorage.setItem("aether-song-lang", lang);
+  applyLang();
+};
+applyLang();
 </script>
 </body>
 </html>
