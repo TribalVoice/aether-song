@@ -786,24 +786,24 @@ function queueLiveSegment() {
   src.buffer = bufferFromSamples(samples, channels);
   src.connect(amp);
   amp.connect(audioCtx.destination);
-  const t = liveNext;
+  const startAt = liveNext;
   const fade = 0.6;
-  amp.gain.setValueAtTime(0, t);
-  amp.gain.linearRampToValueAtTime(1, t + fade);
-  amp.gain.setValueAtTime(1, t + seconds - fade);
-  amp.gain.linearRampToValueAtTime(0, t + seconds);
-  src.start(t);
-  src.stop(t + seconds);
+  amp.gain.setValueAtTime(0, startAt);
+  amp.gain.linearRampToValueAtTime(1, startAt + fade);
+  amp.gain.setValueAtTime(1, startAt + seconds - fade);
+  amp.gain.linearRampToValueAtTime(0, startAt + seconds);
+  src.start(startAt);
+  src.stop(startAt + seconds);
   liveSources.push(src);
   src.onended = () => {
     liveSources = liveSources.filter((x) => x !== src);
   };
-  liveNext = t + seconds - fade;
+  liveNext = startAt + seconds - fade;
   const summary = themes.slice(0, 2).map((th) => th.name).join(", ");
   $("status").dataset.live = "1";
   $("status").textContent = `${t("live")} · ${t("seed").toLowerCase()} ${seed} · ${seconds}s · ${summary || t("cry")}`;
   $("structWord").textContent = themes.length + " " + t("phrases");
-  const wait = Math.max(250, (t - audioCtx.currentTime - 1.5) * 1000);
+  const wait = Math.max(250, (startAt - audioCtx.currentTime - 1.5) * 1000);
   liveTimer = setTimeout(queueLiveSegment, wait);
 }
 
