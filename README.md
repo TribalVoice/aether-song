@@ -9,3 +9,5 @@ Browser whale-song generator in the Aether series. Mournful cries for dark ambie
 **Licence:** MIT. Copyright 2026 TribalVoice.
 
 **Support:** [ko-fi.com/tribalvoice](https://ko-fi.com/tribalvoice)
+
+**Live:** Start live streams the next seed while the current one plays. Seed hold is how long that song lasts. Session can run until stop, or for 15 minutes up to 4 hours. A hours-long 24-bit file is not built; download stays on Compose & play.

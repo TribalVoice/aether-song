@@ -183,11 +183,30 @@
       <label for="density">Phrase density <span id="denLabel">0.62</span></label>
       <input id="density" type="range" min="20" max="100" value="62" />
 
+      <label for="mode">Playback</label>
+      <select id="mode">
+        <option value="take">Take — one file</option>
+        <option value="live">Live — evolving</option>
+      </select>
+
+      <label for="hold">Seed hold <span id="holdLabel">45 s</span></label>
+      <input id="hold" type="range" min="20" max="180" value="45" />
+
+      <label for="session">Live session</label>
+      <select id="session">
+        <option value="0">Until stop</option>
+        <option value="900">15 minutes</option>
+        <option value="3600">1 hour</option>
+        <option value="7200">2 hours</option>
+        <option value="14400">4 hours</option>
+      </select>
+
       <label for="seed">Seed</label>
       <input id="seed" type="number" value="1971" />
 
       <div class="actions">
         <button class="primary" id="play">Compose & play</button>
+        <button class="ghost" id="live">Start live</button>
         <button class="ghost" id="replay" disabled>Replay</button>
         <button class="ghost" id="stop" disabled>Stop</button>
         <button class="ghost" id="download" disabled>Download 24-bit WAV</button>
@@ -206,7 +225,7 @@
       <p class="notes">
         <strong>Mournful cries</strong> are the classic signature: a tone rises a little, holds, then falls over four to ten seconds, mostly between 150 and 700 Hz, with a slow quiver and a long silence after.
         <strong>Blue whale</strong> moans sit at 14–28 Hz; the audible mode pitches them up so you can hear the same shape.
-        Depth darkens the tone. Octave shifts the whole song. Space can be off, a short echo, or the hall. Mono is a true one-channel file so Audacity does not see a stereo pair.
+        Depth darkens the tone. Octave shifts the whole song. Space can be off, a short echo, or the hall. Mono is a true one-channel file. Live plays the next seed while this one sounds, so a session can run for hours without building a giant file.
       </p>
     </section>
   </div>
@@ -615,7 +634,21 @@ function encodeWav24(samples, sampleRate, channels) {
   return new Blob([buffer], { type: "audio/wav" });
 }
 
+let lastChannels = 2;
+let liveTimer = null;
+let liveSources = [];
+let liveRunning = false;
+
 function stopPlayback() {
+  liveRunning = false;
+  if (liveTimer) {
+    clearTimeout(liveTimer);
+    liveTimer = null;
+  }
+  for (const src of liveSources) {
+    try { src.stop(); } catch (e) {}
+  }
+  liveSources = [];
   if (currentSource) {
     try { currentSource.stop(); } catch (e) {}
     currentSource = null;
@@ -623,7 +656,31 @@ function stopPlayback() {
   $("stop").disabled = true;
 }
 
-let lastChannels = 2;
+function readSettings() {
+  return {
+    species: $("species").value,
+    seconds: +$("duration").value,
+    depth: +$("depth").value / 100,
+    density: +$("density").value / 100,
+    seed: ($("seed").value | 0) || 1,
+    blueMode: $("hear").value,
+    octave: +$("octave").value,
+    reverbAmt: +$("reverb").value / 100,
+    space: $("space").value,
+    image: $("image").value,
+    levelDb: +$("level").value
+  };
+}
+
+function bufferFromSamples(samples, channels) {
+  const frames = samples.length / channels;
+  const audioBuf = audioCtx.createBuffer(channels, frames, SR);
+  for (let c = 0; c < channels; c++) {
+    const data = audioBuf.getChannelData(c);
+    for (let i = 0; i < frames; i++) data[i] = samples[i * channels + c];
+  }
+  return audioBuf;
+}
 
 async function playInterleaved(samples, channels) {
   if (!samples) return;
@@ -631,20 +688,72 @@ async function playInterleaved(samples, channels) {
   if (audioCtx.state === "suspended") await audioCtx.resume();
   stopPlayback();
   const ch = channels || 2;
-  const frames = samples.length / ch;
-  const audioBuf = audioCtx.createBuffer(ch, frames, SR);
-  for (let c = 0; c < ch; c++) {
-    const data = audioBuf.getChannelData(c);
-    for (let i = 0; i < frames; i++) data[i] = samples[i * ch + c];
-  }
   const src = audioCtx.createBufferSource();
-  src.buffer = audioBuf;
+  src.buffer = bufferFromSamples(samples, ch);
   src.connect(audioCtx.destination);
   src.onended = () => { $("stop").disabled = true; currentSource = null; };
   src.start();
   currentSource = src;
   $("stop").disabled = false;
 }
+
+function queueLiveSegment() {
+  if (!liveRunning || !audioCtx) return;
+  const hold = +$("hold").value;
+  const session = +$("session").value;
+  if (session && audioCtx.currentTime >= liveEnd) {
+    $("status").textContent = "Live session finished.";
+    stopPlayback();
+    return;
+  }
+  const remain = session ? liveEnd - liveNext : hold;
+  const seconds = Math.max(12, Math.min(hold, remain));
+  const s = readSettings();
+  const seed = (Math.random() * 0x7fffffff) | 0;
+  $("seed").value = seed;
+  const { mono, themes } = compose(s.species, seconds, s.density, seed, s.blueMode, s.octave);
+  const { samples, channels } = colorize(mono, s.depth, s.space, s.reverbAmt, s.levelDb, s.image);
+  const src = audioCtx.createBufferSource();
+  const amp = audioCtx.createGain();
+  src.buffer = bufferFromSamples(samples, channels);
+  src.connect(amp);
+  amp.connect(audioCtx.destination);
+  const t = liveNext;
+  const fade = 0.6;
+  amp.gain.setValueAtTime(0, t);
+  amp.gain.linearRampToValueAtTime(1, t + fade);
+  amp.gain.setValueAtTime(1, t + seconds - fade);
+  amp.gain.linearRampToValueAtTime(0, t + seconds);
+  src.start(t);
+  src.stop(t + seconds);
+  liveSources.push(src);
+  src.onended = () => {
+    liveSources = liveSources.filter((x) => x !== src);
+  };
+  liveNext = t + seconds - fade;
+  const summary = themes.slice(0, 2).map((th) => th.name).join(", ");
+  $("status").textContent = `Live · seed ${seed} · ${seconds}s · ${summary || "cry"}`;
+  $("struct").innerHTML = `Structure <b>${themes.length} phrases</b>`;
+  const wait = Math.max(250, (t - audioCtx.currentTime - 1.5) * 1000);
+  liveTimer = setTimeout(queueLiveSegment, wait);
+}
+
+async function startLive() {
+  if (!audioCtx) audioCtx = new AudioContext();
+  if (audioCtx.state === "suspended") await audioCtx.resume();
+  stopPlayback();
+  liveRunning = true;
+  const session = +$("session").value;
+  liveEnd = session ? audioCtx.currentTime + session : Infinity;
+  liveNext = audioCtx.currentTime + 0.12;
+  $("stop").disabled = false;
+  $("download").disabled = true;
+  $("status").textContent = "Opening the first cry…";
+  queueLiveSegment();
+}
+
+let liveEnd = Infinity;
+let liveNext = 0;
 
 async function composeAndPlay() {
   const species = $("species").value;
@@ -702,6 +811,11 @@ $("reverb").oninput = () => {
   else $("revLabel").textContent = v < 8 ? "dry" : v < 30 ? "room" : v < 60 ? "hall" : "large hall";
 };
 $("space").oninput = () => { $("reverb").oninput(); $("reverb").disabled = $("space").value === "off"; };
+$("hold").oninput = () => { $("holdLabel").textContent = $("hold").value + " s"; };
+$("live").onclick = () => startLive().catch((err) => {
+  $("status").textContent = "Could not start live: " + err.message;
+  stopPlayback();
+});
 $("play").onclick = () => composeAndPlay().catch((err) => {
   $("status").textContent = "Could not compose: " + err.message;
   $("play").disabled = false;
