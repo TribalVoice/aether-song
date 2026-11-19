@@ -719,9 +719,33 @@ let lastChannels = 2;
 let liveTimer = null;
 let liveSources = [];
 let liveRunning = false;
-let liveRecorder = null;
-let liveChunks = [];
-let liveStreamDest = null;
+let liveRecordSegments = [];
+let liveRecording = false;
+
+function finishLiveRecording() {
+  if (!liveRecording || !liveRecordSegments.length) {
+    liveRecordSegments = [];
+    liveRecording = false;
+    return;
+  }
+  const channels = liveRecordSegments[0].channels;
+  let total = 0;
+  for (const seg of liveRecordSegments) total += seg.samples.length / channels;
+  const out = new Float32Array(total * channels);
+  let pos = 0;
+  for (const seg of liveRecordSegments) {
+    out.set(seg.samples, pos);
+    pos += seg.samples.length;
+  }
+  lastBuffer = out;
+  lastChannels = channels;
+  lastBlob = encodeWav24(out, SR, channels);
+  lastName = `aether-song-live-${Date.now()}-24bit.wav`;
+  $("download").disabled = false;
+  $("status").textContent = t("recorded");
+  liveRecordSegments = [];
+  liveRecording = false;
+}
 
 function stopPlayback() {
   liveRunning = false;
@@ -737,9 +761,7 @@ function stopPlayback() {
     try { currentSource.stop(); } catch (e) {}
     currentSource = null;
   }
-  if (liveRecorder && liveRecorder.state === "recording") {
-    liveRecorder.stop();
-  }
+  finishLiveRecording();
   $("stop").disabled = true;
 }
 
@@ -805,7 +827,7 @@ function queueLiveSegment() {
   src.buffer = bufferFromSamples(samples, channels);
   src.connect(amp);
   amp.connect(audioCtx.destination);
-  if (liveStreamDest) amp.connect(liveStreamDest);
+  if (liveRecording) liveRecordSegments.push({ samples, channels });
   const startAt = liveNext;
   const fade = 0.6;
   amp.gain.setValueAtTime(0, startAt);
@@ -832,29 +854,10 @@ async function startLive() {
   if (audioCtx.state === "suspended") await audioCtx.resume();
   stopPlayback();
   liveRunning = true;
-  liveChunks = [];
+  liveRecordSegments = [];
+  liveRecording = !!$("record").checked;
   lastBlob = null;
-  if ($("record").checked) {
-    liveStreamDest = audioCtx.createMediaStreamDestination();
-    const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : "audio/webm";
-    liveRecorder = new MediaRecorder(liveStreamDest.stream, { mimeType: mime });
-    liveRecorder.ondataavailable = (e) => { if (e.data.size) liveChunks.push(e.data); };
-    liveRecorder.onstop = () => {
-      if (liveChunks.length) {
-        lastBlob = new Blob(liveChunks, { type: liveRecorder.mimeType || "audio/webm" });
-        lastName = `aether-song-live-${Date.now()}.webm`;
-        $("download").disabled = false;
-        $("status").textContent = t("recorded");
-      }
-      liveStreamDest = null;
-      liveRecorder = null;
-    };
-    liveRecorder.start(1000);
-  } else {
-    liveStreamDest = null;
-    liveRecorder = null;
-    $("download").disabled = true;
-  }
+  $("download").disabled = true;
   const session = +$("session").value;
   liveEnd = session ? audioCtx.currentTime + session : Infinity;
   liveNext = audioCtx.currentTime + 0.12;
