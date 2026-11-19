@@ -69,6 +69,8 @@
   input[type="range"] { width: 100%; accent-color: var(--teal); }
   .row { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 13px; }
   .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  label.check { display: flex; align-items: center; gap: 8px; margin-top: 12px; text-transform: none; letter-spacing: 0; font-size: 14px; color: var(--foam); }
+  label.check input { accent-color: var(--teal); width: auto; }
   button {
     border: 0;
     border-radius: 999px;
@@ -210,6 +212,11 @@
       <label for="seed" data-i18n="seed">Seed</label>
       <input id="seed" type="number" value="1971" />
 
+      <label class="check">
+        <input id="record" type="checkbox" />
+        <span data-i18n="record">Record live session</span>
+      </label>
+
       <div class="actions">
         <button class="primary" id="play" data-i18n="compose">Compose & play</button>
         <button class="ghost" id="live" data-i18n="start-live">Start live</button>
@@ -247,6 +254,7 @@ const I18N = {
     playback: "Playback", "mode-take": "Take — one file", "mode-live": "Live — evolving", hold: "Seed hold", session: "Live session",
     "until-stop": "Until stop", min15: "15 minutes", hour1: "1 hour", hour2: "2 hours", hour4: "4 hours", seed: "Seed",
     compose: "Compose & play", "start-live": "Start live", replay: "Replay", stop: "Stop", download: "Download 24-bit WAV",
+    record: "Record live session",
     idle: "Idle. Seed 1971 recalls the Payne & McVay song paper.",
     format: "Format", rate: "Rate", channels: "Channels", structure: "Structure",
     notes: "<strong>Mournful cries</strong> are the classic signature: a tone rises a little, holds, then falls over four to ten seconds, mostly between 150 and 700 Hz, with a slow quiver and a long silence after. <strong>Blue whale</strong> moans sit at 14–28 Hz; the audible mode pitches them up so you can hear the same shape. Depth darkens the tone. Octave shifts the whole song. Space can be off, a short echo, or the hall. Mono is a true one-channel file. Live plays the next seed while this one sounds, so a session can run for hours without building a giant file.",
@@ -254,6 +262,7 @@ const I18N = {
     shallow: "shallow", mid: "mid", deep: "deep", unused: "unused", near: "near", canyon: "canyon", far: "far", dry: "dry", room: "room", hall: "hall", "large-hall": "large hall",
     composing: "Composing units, phrases, and themes…", ready: "Ready in", phrases: "phrases", cry: "cry",
     opening: "Opening the first cry…", finished: "Live session finished.", live: "Live",
+    recorded: "Recording ready to download.",
     errCompose: "Could not compose: ", errReplay: "Could not replay: ", errLive: "Could not start live: "
   },
   "pt-BR": {
@@ -265,6 +274,7 @@ const I18N = {
     playback: "Reprodução", "mode-take": "Take — um arquivo", "mode-live": "Ao vivo — em evolução", hold: "Duração da semente", session: "Sessão ao vivo",
     "until-stop": "Até parar", min15: "15 minutos", hour1: "1 hora", hour2: "2 horas", hour4: "4 horas", seed: "Semente",
     compose: "Compor e tocar", "start-live": "Iniciar ao vivo", replay: "Repetir", stop: "Parar", download: "Baixar WAV 24 bits",
+    record: "Gravar sessão ao vivo",
     idle: "Em espera. A semente 1971 lembra o artigo de Payne e McVay.",
     format: "Formato", rate: "Taxa", channels: "Canais", structure: "Estrutura",
     notes: "<strong>Cantos lamentosos</strong> são a assinatura clássica: o tom sobe um pouco, sustenta e cai ao longo de quatro a dez segundos, sobretudo entre 150 e 700 Hz, com um tremor lento e um silêncio longo depois. Os gemidos da <strong>baleia-azul</strong> ficam em 14–28 Hz; o modo audível sobe a altura para que a mesma forma possa ser ouvida. A profundidade escurece o tom. A oitava desloca a canção inteira. O espaço pode ficar desligado, um eco curto ou o hall. Mono é um arquivo de um canal de verdade. O modo ao vivo toca a próxima semente enquanto esta ainda soa, então a sessão pode durar horas sem montar um arquivo enorme.",
@@ -272,6 +282,7 @@ const I18N = {
     shallow: "rasa", mid: "média", deep: "profunda", unused: "sem uso", near: "perto", canyon: "cânion", far: "longe", dry: "seco", room: "sala", hall: "hall", "large-hall": "hall grande",
     composing: "Compondo unidades, frases e temas…", ready: "Pronto em", phrases: "frases", cry: "canto",
     opening: "Abrindo o primeiro canto…", finished: "Sessão ao vivo encerrada.", live: "Ao vivo",
+    recorded: "Gravação pronta para baixar.",
     errCompose: "Não foi possível compor: ", errReplay: "Não foi possível repetir: ", errLive: "Não foi possível iniciar ao vivo: "
   },
   es: {
@@ -283,6 +294,7 @@ const I18N = {
     playback: "Reproducción", "mode-take": "Toma — un archivo", "mode-live": "En vivo — en evolución", hold: "Duración de la semilla", session: "Sesión en vivo",
     "until-stop": "Hasta parar", min15: "15 minutos", hour1: "1 hora", hour2: "2 horas", hour4: "4 horas", seed: "Semilla",
     compose: "Componer y reproducir", "start-live": "Iniciar en vivo", replay: "Repetir", stop: "Parar", download: "Descargar WAV de 24 bits",
+    record: "Grabar sesión en vivo",
     idle: "En espera. La semilla 1971 recuerda el artículo de Payne y McVay.",
     format: "Formato", rate: "Frecuencia", channels: "Canales", structure: "Estructura",
     notes: "<strong>Los cantos lastimeros</strong> son la firma clásica: el tono sube un poco, se sostiene y cae durante cuatro a diez segundos, sobre todo entre 150 y 700 Hz, con un temblor lento y un silencio largo después. Los gemidos de la <strong>ballena azul</strong> están en 14–28 Hz; el modo audible sube la altura para que se oiga la misma forma. La profundidad oscurece el tono. La octava desplaza toda la canción. El espacio puede estar apagado, ser un eco corto o el hall. Mono es un archivo de un solo canal de verdad. El modo en vivo reproduce la siguiente semilla mientras esta aún suena, así que la sesión puede durar horas sin construir un archivo enorme.",
@@ -290,6 +302,7 @@ const I18N = {
     shallow: "poco profunda", mid: "media", deep: "profunda", unused: "sin uso", near: "cerca", canyon: "cañón", far: "lejos", dry: "seco", room: "sala", hall: "hall", "large-hall": "hall grande",
     composing: "Componiendo unidades, frases y temas…", ready: "Listo en", phrases: "frases", cry: "canto",
     opening: "Abriendo el primer canto…", finished: "Sesión en vivo terminada.", live: "En vivo",
+    recorded: "Grabación lista para descargar.",
     errCompose: "No se pudo componer: ", errReplay: "No se pudo repetir: ", errLive: "No se pudo iniciar en vivo: "
   }
 };
@@ -706,6 +719,9 @@ let lastChannels = 2;
 let liveTimer = null;
 let liveSources = [];
 let liveRunning = false;
+let liveRecorder = null;
+let liveChunks = [];
+let liveStreamDest = null;
 
 function stopPlayback() {
   liveRunning = false;
@@ -720,6 +736,9 @@ function stopPlayback() {
   if (currentSource) {
     try { currentSource.stop(); } catch (e) {}
     currentSource = null;
+  }
+  if (liveRecorder && liveRecorder.state === "recording") {
+    liveRecorder.stop();
   }
   $("stop").disabled = true;
 }
@@ -786,6 +805,7 @@ function queueLiveSegment() {
   src.buffer = bufferFromSamples(samples, channels);
   src.connect(amp);
   amp.connect(audioCtx.destination);
+  if (liveStreamDest) amp.connect(liveStreamDest);
   const startAt = liveNext;
   const fade = 0.6;
   amp.gain.setValueAtTime(0, startAt);
@@ -812,11 +832,33 @@ async function startLive() {
   if (audioCtx.state === "suspended") await audioCtx.resume();
   stopPlayback();
   liveRunning = true;
+  liveChunks = [];
+  lastBlob = null;
+  if ($("record").checked) {
+    liveStreamDest = audioCtx.createMediaStreamDestination();
+    const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : "audio/webm";
+    liveRecorder = new MediaRecorder(liveStreamDest.stream, { mimeType: mime });
+    liveRecorder.ondataavailable = (e) => { if (e.data.size) liveChunks.push(e.data); };
+    liveRecorder.onstop = () => {
+      if (liveChunks.length) {
+        lastBlob = new Blob(liveChunks, { type: liveRecorder.mimeType || "audio/webm" });
+        lastName = `aether-song-live-${Date.now()}.webm`;
+        $("download").disabled = false;
+        $("status").textContent = t("recorded");
+      }
+      liveStreamDest = null;
+      liveRecorder = null;
+    };
+    liveRecorder.start(1000);
+  } else {
+    liveStreamDest = null;
+    liveRecorder = null;
+    $("download").disabled = true;
+  }
   const session = +$("session").value;
   liveEnd = session ? audioCtx.currentTime + session : Infinity;
   liveNext = audioCtx.currentTime + 0.12;
   $("stop").disabled = false;
-  $("download").disabled = true;
   $("status").dataset.live = "1";
   $("status").textContent = t("opening");
   queueLiveSegment();
