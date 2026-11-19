@@ -214,7 +214,7 @@
 
       <label class="check">
         <input id="record" type="checkbox" />
-        <span data-i18n="record">Record live session</span>
+        <span data-i18n="record">Record live session (24-bit WAV)</span>
       </label>
 
       <div class="actions">
@@ -254,7 +254,7 @@ const I18N = {
     playback: "Playback", "mode-take": "Take — one file", "mode-live": "Live — evolving", hold: "Seed hold", session: "Live session",
     "until-stop": "Until stop", min15: "15 minutes", hour1: "1 hour", hour2: "2 hours", hour4: "4 hours", seed: "Seed",
     compose: "Compose & play", "start-live": "Start live", replay: "Replay", stop: "Stop", download: "Download 24-bit WAV",
-    record: "Record live session",
+    record: "Record live session (24-bit WAV)",
     idle: "Idle. Seed 1971 recalls the Payne & McVay song paper.",
     format: "Format", rate: "Rate", channels: "Channels", structure: "Structure",
     notes: "<strong>Mournful cries</strong> are the classic signature: a tone rises a little, holds, then falls over four to ten seconds, mostly between 150 and 700 Hz, with a slow quiver and a long silence after. <strong>Blue whale</strong> moans sit at 14–28 Hz; the audible mode pitches them up so you can hear the same shape. Depth darkens the tone. Octave shifts the whole song. Space can be off, a short echo, or the hall. Mono is a true one-channel file. Live plays the next seed while this one sounds, so a session can run for hours without building a giant file.",
@@ -283,6 +283,7 @@ const I18N = {
     composing: "Compondo unidades, frases e temas…", ready: "Pronto em", phrases: "frases", cry: "canto",
     opening: "Abrindo o primeiro canto…", finished: "Sessão ao vivo encerrada.", live: "Ao vivo",
     recorded: "Gravação pronta para baixar.",
+    recording: "Gravando…",
     errCompose: "Não foi possível compor: ", errReplay: "Não foi possível repetir: ", errLive: "Não foi possível iniciar ao vivo: "
   },
   es: {
@@ -741,8 +742,9 @@ function finishLiveRecording() {
   lastChannels = channels;
   lastBlob = encodeWav24(out, SR, channels);
   lastName = `aether-song-live-${Date.now()}-24bit.wav`;
+  $("download").textContent = t("download") + " (" + (lastBlob.size / 1048576).toFixed(1) + " MB)";
   $("download").disabled = false;
-  $("status").textContent = t("recorded");
+  $("status").textContent = t("recorded") + " " + (lastBlob.size / 1048576).toFixed(1) + " MB";
   liveRecordSegments = [];
   liveRecording = false;
 }
@@ -858,6 +860,8 @@ async function startLive() {
   liveRecording = !!$("record").checked;
   lastBlob = null;
   $("download").disabled = true;
+  $("download").textContent = t("download");
+  if (liveRecording) $("status").textContent = t("recording");
   const session = +$("session").value;
   liveEnd = session ? audioCtx.currentTime + session : Infinity;
   liveNext = audioCtx.currentTime + 0.12;
